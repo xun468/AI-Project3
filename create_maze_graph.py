@@ -13,7 +13,7 @@ import matplotlib.pyplot as pyplot
 import networkx as nx
 
 
-
+numpy.random.seed(42)
 # Code copied from Wikipedia
 # Creates a 2d binary array. 1/True is a wall, 0/False is an empty time.
 def create_maze(width, height, complexity, density):
@@ -55,9 +55,9 @@ def maze_to_graph(maze):
         for j in range(1,maze.shape[1]-1):
             if maze[i,j] == 0:
                 maze_size = maze_size + 1
-                
+
     adjacency_matrix = numpy.zeros([maze_size,maze_size], dtype=int)
-    
+
     i_counter = 0
     coordinates = []
     previous_row = numpy.zeros([maze.shape[1]])
@@ -69,13 +69,13 @@ def maze_to_graph(maze):
                 if(maze[i,j-1]==0):
                     adjacency_matrix[i_counter,i_counter-1] = 1
                 if(maze[i-1,j]==0):
-                    adjacency_matrix[i_counter,int(previous_row[j])] = 1                    
+                    adjacency_matrix[i_counter,int(previous_row[j])] = 1
                 previous_row[j] = i_counter
                 i_counter = i_counter + 1
 
 #    print coordinates
     return adjacency_matrix, coordinates
-                    
+
 
 ## Use width,height,complexity and density to customize the layout of
 ## the maze to our liking.
@@ -90,9 +90,9 @@ def create_maze_graph():
     #pyplot.imshow(maze, cmap=pyplot.cm.binary, interpolation='nearest')
     #pyplot.xticks([]), pyplot.yticks([])
     #pyplot.show()
-    
+
     maze, coordinates = maze_to_graph(maze)
-    
+
     maze_graph = nx.from_numpy_matrix(maze)
     nodes = maze_graph.nodes()
 #    coordinates = numpy.array(coordinates)

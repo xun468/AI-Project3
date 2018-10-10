@@ -15,10 +15,10 @@ class Agent:
         self.coord_dict = coord_dict
         self.invalid_counter = 0
         self.goal_node = goal_node
-    
+
     def plan_eval(self):
         return -self.invalid_counter
-    
+
     def move(self,direction,graph):
         next_coords = np.array(self.coordinates)
 #        print next_coords
@@ -39,18 +39,14 @@ class Agent:
                 self.coordinates = new_coords
                 graph.nodes()[self.current_position]['position'] = False
                 graph.nodes()[next_position]['position'] = True
-                return                
+                return
 
-        print "INVALID MOVE"
+        print("INVALID MOVE")
         self.invalid_counter += 1
         return
 
     def execute_plan(self,plan,graph):
         for step in plan:
-            print step
+            print(step)
             self.move(step,graph)
         return self.plan_eval()
-
-
-
-

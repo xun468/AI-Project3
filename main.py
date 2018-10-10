@@ -24,8 +24,8 @@ def print_maze(maze,coordinates):
             color_map.append('green')
         else:
             color_map.append('red')
-    
-    
+
+
     nx.draw(maze,coordinates, node_color=color_map)
 
 
@@ -41,14 +41,14 @@ maze.nodes()[goal_node]['goal'] = True
 
 agent = graph_movement.Agent(starting_node,maze.nodes()[starting_node]['coordinates'],coord_dict,goal_node)
 print_maze(maze,coordinates)
-print agent.coordinates
+print(agent.coordinates)
 plan =["right","up","right","right","down","right","down"]
 agent.execute_plan(plan,maze)
-print agent.coordinates
+print(agent.coordinates)
 
 print_maze(maze,coordinates)
 
-print agent.invalid_counter
+print(agent.invalid_counter)
 
 
 #print maze.edges
