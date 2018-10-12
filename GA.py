@@ -10,15 +10,34 @@ from deap import algorithms
 
 import create_maze_graph as cm
 
-MAX_MOVES = 20
-maze_easy = cm.create_maze(4,4,0.75,0.75)
-maze_test = cm.create_maze(5,5,0.8,0.8)
-maze = maze_test
+def mazePrint(maze,goal,start):
+    for i in range(len(maze)):
+        line = "■ "
+        for j in range(len(maze[0])):
+            if([i,j] == goal):
+                line = line + "X "
+            elif([i,j] == start):
+                line = line + "O "
+            elif (maze[i][j] == True):
+                line = line + "  "
+            else:
+                line = line + "■ "
+        line = line + "■ "
+        print(line)
 
-print(maze)
+MAX_MOVES = 20
+maze_test = cm.create_maze(4,4,0.75,0.75)
+maze_easy = cm.create_maze(5,5,0.8,0.8)
+maze_medium = cm.create_maze(8,8,0.25,0.25)
+maze_hard = cm.create_maze(10,10,0.40,0.2)
+maze_extreme = cm.create_maze(30,30,0.6,0.75)
+maze = maze_medium
+
 #TODO:: THIS IS COMPLETELY ARBITRARY!!
 start = [0,0]
-end = [2,2]
+end = [4,4]
+
+mazePrint(maze,end,start)
 #Heuristic/fitness function. Input is individual (can treat like a list)
 #output is score, Note: the comma is important
 def evalOneMax(individual):
@@ -55,24 +74,27 @@ def evalMaze(ind, verbose = False):
             n_c[1] = c_c[1] - 1
             if verbose:
                 print("moving left " + str(c_c) + " to " + str(n_c))
+        else:
+            if verbose:
+                print("waiting at " + str(c_c))
         nx = n_c[0]
         ny = n_c[1]
 
         if (nx >= len(maze) or ny >= len(maze[0]) or nx < 0 or ny < 0):
             if verbose:
                 print("OUT OF BOUNDS")
-            penalty+=1
+            penalty+=2
 
         elif(maze[nx][ny] == False):
             if verbose:
                 print("INVALID MOVE")
-            penalty+=1
+            penalty+=2
         else:
             c_c[0] = n_c[0]
             c_c[1] = n_c[1]
-            if((c_c[0],c_c[1]) in seen):
+            if((n_c[0],n_c[1]) in seen and ind[i] != 0):
                 if verbose: print("seen")
-                penalty+=2
+                penalty+=1
             if(c_c == end):
                 early_stop = i+1
                 if verbose:
@@ -110,16 +132,16 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("evaluate", evalMaze)
 
 #mutation function, don't think we need another one
-toolbox.register("mutate", tools.mutUniformInt, indpb=0.05,low = 0, up = 4)
+toolbox.register("mutate", tools.mutUniformInt, indpb=0.05,low = 1, up = 4)
 
 #idk
 toolbox.register("mate", tools.cxOnePoint)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
-pop = toolbox.population(n = 2000)
+pop = toolbox.population(n = 1000)
 hof = tools.HallOfFame(1)
 
-pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.50, mutpb=0.25, ngen=60,
+pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.50, mutpb=0.25, ngen=70,
                                halloffame=hof, verbose=True)
 
 print(hof[0])
